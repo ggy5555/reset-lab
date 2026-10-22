@@ -1,0 +1,21 @@
+# Render Blueprint for a personal, single-user HTTPS service.
+# The server is not publicly writable without APP_PASSWORD.
+# Never add credential values to this file or to Git.
+services:
+  - type: web
+    name: reset-lab-3-private
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: off
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_PASSWORD
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: NOTION_API_TOKEN
+        sync: false
