@@ -1,0 +1,12 @@
+{
+  "name":"reset-lab-3",
+  "version":"0.3.0",
+  "private":true,
+  "type":"module",
+  "scripts":{
+    "start":"node server/server.mjs",
+    "dev":"node --env-file=.env server/server.mjs",
+    "test":"node --test test/*.test.mjs"
+  },
+  "engines":{"node":">=20"}
+}
