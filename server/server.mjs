@@ -19,7 +19,8 @@ const secretReady = !placeholder(SECRET) && SECRET.length >= 32;
 const tokenReady = !placeholder(TOKEN) && TOKEN.length >= 24;
 
 if (IS_PROD && (!passReady || !secretReady)) {
-  throw new Error('PRODUCTION SECURITY: Set a private APP_PASSWORD (14+ characters) and AUTH_SECRET (32+ characters) in hosting environment variables before deployment.');
+  // Report validity flags only: never print the environment variable values.
+  throw new Error(`PRODUCTION SECURITY: invalid settings: ${!passReady ? 'APP_PASSWORD ' : ''}${!secretReady ? 'AUTH_SECRET' : ''}. Require APP_PASSWORD 14+ characters and AUTH_SECRET 32+ characters.`);
 }
 const secretKey = secretReady ? SECRET : randomBytes(32).toString('hex');
 const notion = tokenReady ? createNotionClient({token:TOKEN}) : null;
