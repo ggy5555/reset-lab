@@ -1,0 +1,51 @@
+name: Design regression checks
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run existing and design regression tests
+        run: npm test
+
+      - name: Install isolated browser smoke dependencies
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Run local-only before/after browser smoke
+        shell: bash
+        run: |
+          git worktree add /tmp/reset-lab-before origin/main
+          (cd /tmp/reset-lab-before && PORT=8788 NODE_ENV=development npm start > /tmp/reset-lab-before.log 2>&1) &
+          (PORT=8787 NODE_ENV=development npm start > /tmp/reset-lab-after.log 2>&1) &
+          RESET_LAB_BASE_URL=http://127.0.0.1:8787 RESET_LAB_BEFORE_URL=http://127.0.0.1:8788 node test/browser-smoke.mjs
+        env:
+          # No APP_PASSWORD or NOTION_API_TOKEN is passed to test servers.
+          RESET_LAB_CI_LOCAL_ONLY: 'true'
+
+      - name: Upload desktop and mobile comparison captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reset-lab-design-comparison
+          path: artifacts/
+          if-no-files-found: ignore
