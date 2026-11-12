@@ -110,6 +110,7 @@ try{
   await mobile.screenshot({path:'artifacts/after-mobile.png',fullPage:true});
   await mobile.locator('[data-tab="time"]').click();
   assert.ok(await mobile.locator('#time.active').isVisible());
+  await mobile.waitForTimeout(220); // Let CSS focus/selection transitions settle before capture.
   await mobile.screenshot({path:'artifacts/after-mobile-time.png',fullPage:true});
 
   const keyboard=await browser.newPage();
