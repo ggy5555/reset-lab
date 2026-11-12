@@ -14,11 +14,451 @@
 /* The study/other-activity controls are conditionally hidden. Author CSS must not override HTML hidden. */
 [hidden]{display:none!important}
 @media(max-width:700px){.sync-panel{grid-template-columns:1fr}}
+
+/* RESET LAB 3.0 — Phase A Premium Monochrome Layer
+   Overrides legacy Phase 3 declarations while preserving the existing DOM IDs,
+   localStorage keys, timers, rendering functions and sync integration.
+   The Node server currently serves / and /sync.js only, so CSS stays embedded
+   until a separate static-asset routing change is authorized. */
+:root {
+  --ink:#151515;
+  --ink2:#464646;
+  --muted:#777874;
+  --line:#e5e5e3;
+  --bg:#f5f5f3;
+  --white:#fff;
+  --r:12px;
+  --surface:#ffffff;
+  --surface-alt:#fbfbfa;
+  --focus:#454545;
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-6:24px;
+  --space-8:32px;
+  --sidebar-width:228px;
+  --content-width:1360px;
+  --motion-fast:140ms;
+}
+html { min-width:320px; }
+body {
+  font-family:Pretendard, "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+  font-size:14px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+button, input, select, textarea { font-family:inherit; }
+button, a, input, select, textarea, summary { -webkit-tap-highlight-color:transparent; }
+button, a, input, select, textarea, summary { transition:border-color var(--motion-fast) ease, background-color var(--motion-fast) ease, color var(--motion-fast) ease, box-shadow var(--motion-fast) ease; }
+button:focus-visible, a:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, summary:focus-visible,
+.nav-btn:focus-visible {
+  outline:2px solid var(--focus);
+  outline-offset:3px;
+}
+nav {
+  width:var(--sidebar-width);
+  padding:28px 13px 18px;
+  background:#151515;
+  border-right:1px solid #222;
+}
+.logo {
+  padding:6px 14px 32px;
+  font-size:19px;
+  font-weight:850;
+  letter-spacing:-.85px;
+  line-height:1.15;
+}
+.logo small {
+  margin-top:11px;
+  color:#8b8b8b;
+  font-size:9px;
+  font-weight:650;
+  letter-spacing:1.9px;
+}
+.nav-btn {
+  border-radius:8px;
+  margin:2px 0;
+  padding:12px 13px;
+  gap:12px;
+  min-height:43px;
+  color:#a6a6a6;
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.075em;
+}
+.nav-btn:hover { background:#272727; color:#fff; }
+.nav-btn.selected { background:#f1f1ee; color:#151515; }
+.nicon { font-size:17px; line-height:1; font-weight:500; flex:0 0 18px; }
+.sidebar-footer {
+  margin:0 8px;
+  padding:20px 5px 5px;
+  border-top:1px solid #363636;
+  color:#929292;
+  font-size:10px;
+  line-height:1.75;
+}
+.layout {
+  margin-left:var(--sidebar-width);
+  max-width:calc(var(--content-width) + var(--sidebar-width));
+  padding:37px clamp(24px,4vw,56px) 64px;
+}
+.top {
+  align-items:flex-end;
+  margin-bottom:29px;
+  padding-bottom:22px;
+  border-bottom:1px solid var(--line);
+}
+.eyebrow {
+  font-size:10px;
+  letter-spacing:.18em;
+  color:#7b7b7b;
+  font-weight:700;
+}
+.pagetitle {
+  margin:7px 0 0;
+  font-size:clamp(28px,3vw,37px);
+  letter-spacing:-.055em;
+  font-weight:820;
+  line-height:1.15;
+}
+.topright { gap:8px; }
+.pill {
+  font-size:10px;
+  letter-spacing:.025em;
+  padding:7px 10px;
+  border:1px solid var(--line);
+  color:#5f5f5f;
+  background:var(--surface);
+  font-weight:650;
+}
+#cloudBadge {
+  color:#454545;
+  background:#ececea;
+  border-color:#ececea;
+}
+.grid { gap:18px; }
+.card {
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:22px 24px;
+  box-shadow:0 1px 2px rgba(0,0,0,.018);
+}
+.card h3 {
+  font-size:11px;
+  line-height:1.45;
+  font-weight:780;
+  letter-spacing:.095em;
+  margin-bottom:17px;
+}
+.card h3 span {
+  color:#8c8c8c;
+  letter-spacing:0;
+  font-size:10px;
+  font-weight:500;
+  text-align:right;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.metric {
+  font-size:clamp(32px,3.3vw,42px);
+  letter-spacing:-.055em;
+  font-weight:785;
+  line-height:1.1;
+  font-variant-numeric:tabular-nums lining-nums;
+  white-space:nowrap;
+}
+.metric-label {
+  font-size:12px;
+  line-height:1.55;
+  margin-top:9px;
+  color:#777;
+}
+.section {
+  margin:32px 0 13px;
+  gap:12px;
+  align-items:center;
+}
+.section h2 {
+  font-size:14px;
+  line-height:1.35;
+  font-weight:780;
+  letter-spacing:-.02em;
+}
+.section small {
+  font-size:11px;
+  text-align:right;
+  line-height:1.5;
+}
+.quiet, .hint { line-height:1.75; }
+.hint { color:#858585; }
+.btn {
+  min-height:39px;
+  padding:9px 13px;
+  border:1px solid #d6d6d3;
+  border-radius:9px;
+  color:#262626;
+  background:#fff;
+  font-size:12px;
+  font-weight:740;
+  line-height:1.4;
+}
+.btn:hover:not(:disabled) { background:#f4f4f2; border-color:#c3c3bf; }
+.btn:active:not(:disabled) { box-shadow:inset 0 1px 3px rgba(0,0,0,.13); }
+.btn.primary { color:#fff; background:#191919; border-color:#191919; }
+.btn.primary:hover:not(:disabled) { background:#333; border-color:#333; }
+.btn.soft { color:#4e4e4e; background:#f3f3f1; border-color:#f3f3f1; }
+.btn.sm { min-height:33px; padding:7px 10px; font-size:11px; }
+.field { gap:7px; }
+.field label {
+  color:#696969;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.015em;
+}
+.field input,.field select,.field textarea,.day-select {
+  min-height:42px;
+  border:1px solid #dcdcd9;
+  background:#fbfbfa;
+  border-radius:9px;
+  color:#262626;
+  padding:10px 12px;
+}
+.field input:focus,.field select:focus,.field textarea:focus {
+  background:#fff;
+  outline:2px solid #7a7a78;
+  outline-offset:1px;
+}
+.field input::placeholder,.field textarea::placeholder { color:#aaa; }
+.formrow { gap:14px; margin-bottom:17px; }
+#home .dashboard-overview {
+  grid-template-columns:minmax(260px,1.65fr) repeat(3,minmax(0,1fr));
+  align-items:stretch;
+}
+#home .dashboard-overview > .card { min-height:160px; }
+#home .dashboard-overview > .card:first-child {
+  color:#f8f8f7;
+  background:#1c1c1c;
+  border-color:#1c1c1c;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:215px;
+}
+#home .dashboard-overview > .card:first-child h3 span,
+#home .dashboard-overview > .card:first-child .metric-label { color:#aaa; }
+#home .dashboard-overview > .card:first-child .metric {
+  color:#fff;
+  font-size:clamp(38px,4vw,52px);
+  letter-spacing:-.055em;
+}
+#home .dashboard-overview > .card:first-child .btn {
+  background:#f5f5f3;
+  color:#222;
+  border-color:#f5f5f3;
+}
+#home .dashboard-overview > .card:first-child .btn:hover { background:#ddd; }
+#home #homeTaskList .task, #home #homeActiveList .session { min-height:65px; }
+#time > .grid:first-child { grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); align-items:start; }
+#time #startLife { min-height:46px; width:100%; margin-top:4px; letter-spacing:.035em; }
+#time #studyOptions {
+  margin:5px 0 17px;
+  padding:16px;
+  border:1px solid #e6e6e4;
+  border-radius:10px;
+  background:#fafaf9;
+}
+#time .time-big {
+  font-size:42px;
+  letter-spacing:-.055em;
+  font-variant-numeric:tabular-nums;
+}
+#time .ringbox { min-height:320px; }
+.session {
+  gap:15px;
+  padding:14px 0;
+  border-color:#eaeae8;
+}
+.session-name { font-size:13px; line-height:1.45; font-weight:750; overflow-wrap:anywhere; }
+.session-meta { color:#8a8a8a; margin-top:6px; line-height:1.5; }
+.session-right .time {
+  font-size:20px;
+  font-weight:750;
+  letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.session-actions { flex-wrap:wrap; margin-top:8px; }
+.session-actions .primary { background:#242424; }
+.inline-badge {
+  border-color:#e6e6e4;
+  background:#f8f8f7;
+  color:#565656;
+  margin-left:4px;
+  font-weight:600;
+  letter-spacing:.025em;
+}
+.layout-24 {
+  height:62px;
+  background:#f0f0ee;
+  border:1px solid #e1e1df;
+  border-radius:8px;
+}
+.ticks {
+  margin-top:9px;
+  color:#777;
+  font-size:10px;
+  letter-spacing:.035em;
+  font-variant-numeric:tabular-nums;
+}
+.legend { margin-top:17px; row-gap:9px; }
+.legend span { color:#686868; font-size:11px; }
+.chartbar { gap:13px; margin:14px 0; }
+.chartbar span:first-child { flex-basis:97px; font-weight:580; }
+.chartbar .rail { height:10px; border-radius:3px; background:#efefee; }
+.chartbar .fill { border-radius:3px; background:#303030; }
+.chartbar strong { font-weight:730; flex-basis:60px; font-variant-numeric:tabular-nums; }
+#analytics .cols-3 .card { min-height:149px; }
+#analytics .notice { margin-top:22px; }
+.empty {
+  color:#8f8f8f;
+  font-size:12px;
+  line-height:1.7;
+  padding:30px 10px;
+}
+.notice {
+  background:#f0f0ee;
+  color:#666;
+  border:1px solid #e3e3e0;
+  line-height:1.7;
+  border-radius:10px;
+}
+.task { padding:15px 0; gap:13px; min-width:0; }
+.task-title { font-weight:735; font-size:13px; line-height:1.45; overflow-wrap:anywhere; }
+.task-details { margin-top:6px; line-height:1.5; }
+.task.done { opacity:.68; }
+.task .push { flex-shrink:0; }
+.task input[type=checkbox] { accent-color:#222; width:17px; height:17px; }
+#planner .task-form { gap:13px; }
+#planner #taskList { min-height:86px; }
+.calendaritem { padding:4px 0 4px 13px; border-left:2px solid #282828; }
+.calendaritem time { font-variant-numeric:tabular-nums; }
+.list-table th {
+  color:#747474;
+  font-weight:680;
+  letter-spacing:.02em;
+  background:#fafaf9;
+}
+.list-table td { line-height:1.6; }
+.list-table tr:hover td { background:#fbfbfa; }
+#system .sync-note {
+  border:1px solid #e2e2df;
+  background:#f5f5f3;
+  border-radius:9px;
+  line-height:1.7;
+  font-size:12px;
+}
+.sync-note[data-kind="error"] { border-left:3px solid #676767; }
+.sync-note[data-kind="success"] { border-left:3px solid #262626; }
+.sync-disclaimer {
+  color:#787878;
+  font-size:11px;
+  line-height:1.7;
+  margin:10px 0 0;
+}
+#system .session:last-child { border:0; }
+.footer {
+  margin-top:38px;
+  padding-top:19px;
+  border-top:1px solid var(--line);
+  font-size:10px;
+  letter-spacing:.025em;
+  line-height:1.65;
+}
+@media (max-width:1200px) {
+  #home .dashboard-overview { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  #home .dashboard-overview > .card:first-child { grid-column:span 3; min-height:205px; }
+  #home .dashboard-overview > .card:first-child .metric { font-size:44px; }
+}
+@media (max-width:900px) {
+  .layout { padding:28px 22px 48px; }
+  #time > .grid:first-child { grid-template-columns:1fr; }
+  #analytics .cols-3 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:700px) {
+  nav {
+    width:100%;
+    height:77px;
+    padding:8px 8px 9px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    gap:2px;
+    align-items:center;
+    scrollbar-width:thin;
+    scrollbar-color:#444 transparent;
+  }
+  .logo { font-size:14px; padding:6px 13px 6px 6px; }
+  .nav-btn {
+    font-size:9px;
+    padding:9px 10px 7px;
+    min-height:57px;
+    min-width:65px;
+    width:auto;
+    flex:0 0 auto;
+    flex-direction:column;
+    gap:6px;
+    justify-content:center;
+    align-items:center;
+    white-space:nowrap;
+    letter-spacing:.03em;
+  }
+  .nicon { width:auto; font-size:17px; }
+  .layout { margin-left:0; padding:98px 14px 42px; }
+  .top { align-items:flex-start; gap:8px; padding-bottom:17px; margin-bottom:21px; }
+  .pagetitle { font-size:28px; }
+  .topright { gap:5px; }
+  .top .pill { font-size:9px; max-width:132px; padding:6px 7px; }
+  .grid { gap:12px; }
+  .card { padding:17px 17px 18px; border-radius:11px; }
+  #home .dashboard-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #home .dashboard-overview > .card { min-height:134px; }
+  #home .dashboard-overview > .card:first-child {
+    grid-column:span 2;
+    min-height:215px;
+  }
+  #home .dashboard-overview > .card:last-child { grid-column:span 2; }
+  #home .dashboard-overview > .card:first-child .metric { font-size:40px; }
+  .metric { font-size:30px; white-space:normal; overflow-wrap:anywhere; }
+  .section { margin-top:26px; }
+  .section h2 { font-size:13px; }
+  .task-form { grid-template-columns:1fr; }
+  #planner .task-form { grid-template-columns:1fr; }
+  .formrow { grid-template-columns:1fr; }
+  .session { align-items:flex-start; flex-wrap:wrap; }
+  .session-right { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; text-align:left; }
+  .session-actions { margin:0; }
+  .list-table { min-width:480px; }
+  .sync-panel { grid-template-columns:1fr; }
+}
+@media (max-width:380px) {
+  .top { flex-direction:column; }
+  .topright { flex-direction:row; align-items:center; }
+  #home .dashboard-overview > .card:not(:first-child) { padding:15px 12px; }
+  #home .dashboard-overview > .card:not(:first-child) .metric { font-size:27px; }
+  .session-right { align-items:flex-start; flex-direction:column; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
+}
+
 </style></head>
 <body>
-<nav><div class="logo">◼ RESET LAB<small>3.0 / MONOCHROME OS</small></div><button class="nav-btn selected" data-tab="home"><span class="nicon">◧</span>HOME</button><button class="nav-btn" data-tab="time"><span class="nicon">◷</span>TIME LAB</button><button class="nav-btn" data-tab="analytics"><span class="nicon">▥</span>ANALYTICS</button><button class="nav-btn" data-tab="wellness"><span class="nicon">♡</span>WELLNESS</button><button class="nav-btn" data-tab="planner"><span class="nicon">☑</span>PLANNER</button><button class="nav-btn" data-tab="system"><span class="nicon">⚙</span>SYSTEM</button><div class="sidebar-footer">SYNC PROTOTYPE / PHASE 2<br>브라우저 저장 우선 · 로그인 후 학교 Notion으로 전송</div></nav>
-<main class="layout"><div class="top"><div><div class="eyebrow" id="eyebrow">PERSONAL OPERATING SYSTEM / 00</div><h1 class="pagetitle" id="pagetitle">HOME</h1></div><div class="topright"><span class="pill" id="headerdate"></span><span class="pill" id="cloudBadge">LOCAL + SYNC</span></div></div>
-<section class="page active" id="home"><div class="grid cols-4"><div class="card"><h3>ACTIVE TIMER <span>LIVE</span></h3><div class="metric" id="homeClock">00:00:00</div><div class="metric-label" id="homeActiveName">실행 중인 활동 없음</div><div style="margin-top:13px"><button class="btn sm" onclick="tab('time')">타이머 열기 ↗</button></div></div><div class="card"><h3>TODAY'S SELF STUDY <span>자습만</span></h3><div class="metric" id="homeStudy">0h 00m</div><div class="metric-label">학원·학교 수업 제외</div></div><div class="card"><h3>TODAY'S ACTIVITIES <span>측정 세션</span></h3><div class="metric" id="homeCount">0</div><div class="metric-label">종료된 활동 개수</div></div><div class="card"><h3>OPEN TASKS <span>PLANNER</span></h3><div class="metric" id="homeTasksCount">0</div><div class="metric-label">완료되지 않은 할 일</div></div></div><div class="section"><h2>TODAY'S 24H TIMELINE</h2><small>미측정 구간은 빈칸</small></div><div class="card"><div id="homeTimeline"></div><div class="legend" id="homeLegend"></div><div class="hint">진행 중인 기록을 포함하며, 겹치는 시간이 아직 대표/보조로 정해지지 않았으면 사선 패턴으로 표시함.</div></div><div class="section"><h2>TODAY'S TASKS</h2><button class="btn sm" onclick="tab('planner')">모든 할 일 →</button></div><div class="card" id="homeTaskList"></div><div class="section"><h2>RUNNING / PAUSED</h2></div><div class="card" id="homeActiveList"></div></section>
+<nav><div class="logo">◼ RESET LAB<small>3.0 / PERSONAL SYSTEM</small></div><button class="nav-btn selected" data-tab="home"><span class="nicon">◧</span>HOME</button><button class="nav-btn" data-tab="time"><span class="nicon">◷</span>TIME LAB</button><button class="nav-btn" data-tab="analytics"><span class="nicon">▥</span>ANALYTICS</button><button class="nav-btn" data-tab="wellness"><span class="nicon">♡</span>WELLNESS</button><button class="nav-btn" data-tab="planner"><span class="nicon">☑</span>PLANNER</button><button class="nav-btn" data-tab="system"><span class="nicon">⚙</span>SYSTEM</button><div class="sidebar-footer">PERSONAL WORKSPACE / PHASE 3<br>브라우저 저장 우선 · 로그인 후 학교 Notion으로 전송</div></nav>
+<main class="layout"><div class="top"><div><div class="eyebrow" id="eyebrow">PERSONAL OPERATING SYSTEM / 00</div><h1 class="pagetitle" id="pagetitle">HOME</h1></div><div class="topright"><span class="pill" id="headerdate"></span><span class="pill" id="cloudBadge" title="서버 연결은 Notion 저장 성공을 의미하지 않습니다">LOCAL STORAGE</span></div></div>
+<section class="page active" id="home"><div class="grid dashboard-overview"><div class="card"><h3>ACTIVE TIMER <span>LIVE</span></h3><div class="metric" id="homeClock">00:00:00</div><div class="metric-label" id="homeActiveName">실행 중인 활동 없음</div><div style="margin-top:13px"><button class="btn sm" onclick="tab('time')">타이머 열기 ↗</button></div></div><div class="card"><h3>TODAY'S SELF STUDY <span>자습만</span></h3><div class="metric" id="homeStudy">0h 00m</div><div class="metric-label">학원·학교 수업 제외</div></div><div class="card"><h3>TODAY'S ACTIVITIES <span>측정 세션</span></h3><div class="metric" id="homeCount">0</div><div class="metric-label">종료된 활동 개수</div></div><div class="card"><h3>OPEN TASKS <span>PLANNER</span></h3><div class="metric" id="homeTasksCount">0</div><div class="metric-label">완료되지 않은 할 일</div></div></div><div class="section"><h2>TODAY'S 24H TIMELINE</h2><small>미측정 구간은 빈칸</small></div><div class="card"><div id="homeTimeline"></div><div class="legend" id="homeLegend"></div><div class="hint">진행 중인 기록을 포함하며, 겹치는 시간이 아직 대표/보조로 정해지지 않았으면 사선 패턴으로 표시함.</div></div><div class="section"><h2>TODAY'S TASKS</h2><button class="btn sm" onclick="tab('planner')">모든 할 일 →</button></div><div class="card" id="homeTaskList"></div><div class="section"><h2>RUNNING / PAUSED</h2></div><div class="card" id="homeActiveList"></div></section>
 <section class="page" id="time"><div class="grid cols-2"><div class="card"><h3>START LIFE SESSION <span>STOPWATCH</span></h3>
 <div class="formrow"><div class="field"><label for="lifeCategory">활동 대분류 — 6개 고정</label><select id="lifeCategory"></select></div><div class="field" id="lifeTagField"><label for="lifeTag">세부 태그 (선택)</label><select id="lifeTag"></select></div></div>
 <div id="studyOptions" hidden><div class="formrow"><div class="field"><label for="studySubject">과목</label><select id="studySubject"></select></div><div class="field"><label for="studyType">공부 유형</label><select id="studyType"></select></div></div>
@@ -33,7 +473,7 @@
 <div class="card"><h3>SECURE CONNECTION <span>NO BROWSER TOKEN</span></h3>
 <div class="sync-panel" id="loginPanel"><div><label for="syncPassword">서버에서 설정한 앱 비밀번호</label><input type="password" id="syncPassword" autocomplete="current-password" placeholder="APP_PASSWORD (노션 토큰 아님)"></div><div><label>동기화 활성화</label><button class="btn primary" id="loginButton">서버 로그인</button></div></div>
 <div class="stack"><button class="btn" id="verifyButton" disabled>연결 권한 검사</button><button class="btn" id="syncButton" disabled>↻ 지금 Notion으로 전송</button><button class="btn" id="logoutButton">로그아웃</button></div>
-<div class="sync-note" id="syncStatus" aria-live="polite">연결 상태 확인 중 · 파일 모드에선 로컬 기록만 가능</div>
+<div class="sync-note" id="syncStatus" aria-live="polite">연결 상태 확인 중 · 파일 모드에선 로컬 기록만 가능</div><p class="sync-disclaimer">서버 인증 및 읽기 권한 확인은 Notion 저장 성공을 보증하지 않습니다. 저장 결과는 전송 응답과 Notion 데이터에서 별도로 확인해야 합니다.</p>
 <div class="hint">단방향 동기화: 이 브라우저의 완료된 세션·할 일을 Notion으로 보냄. Notion에서 변경한 내용을 브라우저로 내려받지는 않음. 연결 전에는 기록을 로컬에 유지하므로 JSON 백업을 권장해.</div>
 </div></section>
 <div class="footer">RESET LAB 3.0 · PHASE 3 · 로컬 저장 우선 · 서버 로그인 후 학교 Notion에 단방향 동기화</div></main>
